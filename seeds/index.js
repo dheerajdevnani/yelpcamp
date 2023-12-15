@@ -24,15 +24,23 @@ const seedDB = async()=>{
     // const c=new Campground({title:`kjhf djhfds`});
     // await c.save();
     for(let i=0;i<50;i++){
-        const random1000=Math.floor(Math.random()*1000);
-
-       const camp= new Campground({
+         const random1000=Math.floor(Math.random()*1000);
+         const price=Math.floor(Math.random()*20)+10;
+         const camp= new Campground({
             location:`${cities[random1000].city}, ${cities[random1000].state}`,
-            title:`${sample(descriptors)} ${sample(places)}`
+            title:`${sample(descriptors)} ${sample(places)}`,
+            image:'https://source.unsplash.com/collection/2184453',
+            description:'wow! very beautiful places!',
+            price
+
+
+            
         })
         await camp.save();
     }
 }
-seedDB();
+seedDB().then(()=>{
+  mongoose.connection.close();
+})
 
 
