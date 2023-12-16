@@ -1,24 +1,35 @@
 const express = require('express');
 const router = express.Router();
+const catchAsync=require('../utilis/catchAsync');
 const User = require('../models/user');
+// const catchAsync = require('../utilis/catchAsync');
 
 router.get('/register', (req, res) => {
   res.render('users/register');
 });
 
-router.post('/register', async (req, res) => {
+router.post('/register', catchAsync(async(req, res) => {
   // res.send(req.body)
-  const { email, username, password } = req.body;
+  try{
+    const { email, username, password } = req.body;
   
-  // Use 'User' instead of 'user' for object instantiation
-  const newUser = new User({ email, username });
+    // Use 'User' instead of 'user' for object instantiation
+    const newUser = new User({ email, username });
+    
+    const registeredUser = await User.register(newUser, password);
+    req.flash('success', 'Welcome to Yelp Camp!');
+    res.redirect('/campgrounds');
+  }
+  catch(e)
+  {
+     req.flash('error',e.message);
+     res.redirect('register');
+  }
+
   
-  const registeredUser = await User.register(newUser, password);
+//   console.log(registeredUser);
   
-  console.log(registeredUser);
   
-  req.flash('success', 'Welcome to Yelp Camp!');
-  res.redirect('/campgrounds');
-});
+}));
 
 module.exports = router;
