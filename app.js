@@ -8,14 +8,16 @@ const {campgroundSchema,reviewSchema}=require('./schema.js')
 const catchAsync=require('./utilis/catchAsync');
 const ExpressError=require('./utilis/ExpressError');
 const methodOverride=require('method-override');
-
+const passport=require('passport');
+const LocalStrategy=require('passport-local');
+const User=require('./models/user');
 
 const Campground = require('./models/campground');
-const Review=require('./models/review')
+const Review=require('./models/review');
 
-
-const campgrounds=require('./routes/campgrounds');
-const reviews=require('./routes/reviews');
+const userRoutes=require('./routes/users')
+const campgroundRoutes=require('./routes/campgrounds');
+const reviewRoutes=require('./routes/reviews');
 
 var dotenv = require('dotenv');
 dotenv.config();
@@ -59,6 +61,13 @@ const sessionConfig={
 app.use(session(sessionConfig))
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 app.use((req,res,next)=>{
   res.locals.success=req.flash('success');
@@ -87,8 +96,16 @@ const validateReview=(req,res,next)=>{
    }
 }
 
-app.use('/campgrounds',campgrounds)
-app.use('/campgrunds/:id/reviews', reviews)
+
+app.get('/fakeUser',async(req,res)=>{
+  const user=new User({email:'pratiksharma7739@gmail.com',username:'pratik'});
+  const newUser=await User.register(user,'chicken');
+  res.send(newUser);
+})
+
+app.use('/',userRoutes)
+app.use('/campgrounds',campgroundRoutes)
+app.use('/campgrunds/:id/reviews', reviewRoutes)
 
 
 
