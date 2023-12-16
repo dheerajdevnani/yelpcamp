@@ -2,7 +2,6 @@ const express =require('express');
 const path=require('path');
 const mongoose=require('mongoose');
 const ejsMate= require('ejs-mate');
-// const Joi=require('joi');
 const {campgroundSchema,reviewSchema}=require('./schema.js')
 const catchAsync=require('./utilis/catchAsync');
 const ExpressError=require('./utilis/ExpressError');
@@ -10,6 +9,8 @@ const methodOverride=require('method-override');
 const Campground = require('./models/campground');
 const Review=require('./models/review')
 
+
+const campgrounds=require('./routes/campgrounds.js');
 
 var dotenv = require('dotenv');
 dotenv.config();
@@ -35,13 +36,13 @@ app.use(express.urlencoded({extened:true}));
 app.use(methodOverride('_method'));
 
 const validateCampground=(req,res,next)=>{
-    const {error} = campgroundSchema.validate(req.body);  
-    if(error){
-      const msg=error.details.map(el => el.message).join(',')
-      throw new ExpressError(msg,400)
-    }else{
-      next();
-    }
+  const {error} = campgroundSchema.validate(req.body);  
+  if(error){
+    const msg=error.details.map(el => el.message).join(',')
+    throw new ExpressError(msg,400)
+  }else{
+    next();
+  }
 }
 
 const validateReview=(req,res,next)=>{
@@ -55,10 +56,13 @@ const validateReview=(req,res,next)=>{
    }
 }
 
+app.use('/campgrounds',campgrounds)
+
 app.get('/', (req,res)=>{
  res.render('home')
 });
-app.get('/campgrounds',catchAsync(async(req,res)=>{
+
+app.get('/campgrounds', catchAsync(async(req,res)=>{
   const campgrounds=await Campground.find({});
   res.render('campgrounds/index',{campgrounds})
   
@@ -148,4 +152,3 @@ app.use((err,req,res,next)=>{
 app.listen(3000,()=>{
     console.log('serving on the port 3000')
 })
-
