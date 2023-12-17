@@ -1,27 +1,13 @@
 const express=require('express');
 const router= express.Router();
-
+const {validateReview}=require('../middleware');
 const Campground = require('../models/campground');
 const Review=require('../models/review');
-
-const {reviewSchema}=require('../schema.js')
-// const{reviewSchema}=require('../schema.js')
-
-
 const ExpressError=require('../utilis/ExpressError.js');
 const catchAsync=require('../utilis/catchAsync');
 
 
-const validateReview=(req,res,next)=>{
-    const{error}=reviewSchema.validate(req.body);
-    if(error){
-     const msg=error.details.map(el=>el.message).join(',')
-     throw new ExpressError(msg,400)
-    }
-    else{
-     next();
-    }
- }
+
 
 router.post('/', validateReview, catchAsync(async(req,res)=>{
     const campground=await Campground.findById(req.params.id);
