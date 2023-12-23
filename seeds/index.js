@@ -33,6 +33,13 @@ const seedDB = async()=>{
             // image:'https://source.unsplash.com/collection/2184453',
             description:'wow! very beautiful places!',
             price,
+            geometry:{
+                 type:"Point",
+                 coordinates:[
+                  cities[random1000].longitude,
+                  cities[random1000].latitude, 
+                ]
+            },
             images:[       
               {
                 url: 'https://res.cloudinary.com/da1qsm7rq/image/upload/v1703124998/newProject/qdl9bl2zt0fk6d3xoi8x.jpg',
