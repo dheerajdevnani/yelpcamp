@@ -2,9 +2,9 @@
 <link rel="stylesheet" href="/stylesheets/stars.css">
 
 
-<script>
+<!-- <script>
   const mapToken='<%-process.env.MAPBOX_TOKEN%>';
-</script>
+</script> -->
 
 <div class="row">
     <div class="col-6 ">
@@ -110,24 +110,16 @@
       </div>
 </div>
 
+
+<script>
+  const mapToken = '<%- process.env.MAPBOX_TOKEN%>';
+  // const campground = <% - JSON.stringify(campground) %>;
+  const campground = '<%- JSON.stringify(campground) %>';
+
+</script>
+
 <script src="/javascripts/showPageMap.js">
 
 </script>
-    <!-- <h1><%=campground.title %></h1>
-    <h2><%=campground.location %></h2>
-    <img src="<%= campground.image%>" alt="">
-    <p><%= campground.description %></p>
 
-    <p><a href="/campgrounds/<%=campground._id%>/edit">Edit</a>
-    </p>
-    <p>
-        <form action="/campgrounds/<%=campground._id%>?_method=DELETE" method="POST">
-            <button>Delete</button>
-        </form>
-    </p>
-    <footer>
-        
-        <a href="/campgrounds">ALL campgrounds</a>
-    </footer>
 
-<!-- <!--     
